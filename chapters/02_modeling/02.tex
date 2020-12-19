@@ -48,9 +48,20 @@ Kết quả tìm được như sau:
      & Strategy A & Strategy B \\
     \hline
     \hline
-    Params & abc & abc \\
-    Best score & vv & vv \\
-    Testing set score & cc & cc \\
+    Params & \begin{tabular}{@{}c@{}}
+        \textbf{\underline{learning\_rate}}: 0.01 \\ 
+        \textbf{\underline{max\_depth}}: 3 \\ 
+        \textbf{\underline{subsample}}: 0.3 \\
+        \textbf{\underline{n\_estimators}}: 100
+    \end{tabular} & \begin{tabular}{@{}c@{}}
+        \textbf{\underline{learning\_rate}}: 0.01 \\ 
+        \textbf{\underline{max\_depth}}: 3 \\ 
+        \textbf{\underline{subsample}}: 0.3 \\
+        \textbf{\underline{n\_estimators}}: 100
+    \end{tabular} \\
+    Best score & 0.5386 & 0.5189 \\
+    Best model on test set & 0.5078 & 0.4945 \\
+    Testing set score & 0.5029 & 0.4955 \\
     \hline
     \end{tabular}
 \end{table}
@@ -58,7 +69,9 @@ Kết quả tìm được như sau:
 
 \subsection{Support Vector Regression}
 
-Do giới hạn về thời gian và kinh nghiệm, trong project này chỉ sử dụng kernel \textbf{rbf}. Các hyperparameter sẽ được tuning là:
+Do giới hạn về thời gian và kinh nghiệm, trong project này chỉ sử dụng kernel \textbf{rbf}. 
+
+Các hyperparameter sẽ được tuning là:
 
 \begin{itemize}
 \item \textbf{\underline{C}}: Khảo sát các giá trị: 0.01, 0.1, 1, 10
@@ -68,18 +81,30 @@ Do giới hạn về thời gian và kinh nghiệm, trong project này chỉ s�
 \item \textbf{\underline{gamma}}: Khảo sát các giá trị: 'auto', 'scale'
 \end{itemize}
 
-Kết quả tìm được như bên dưới:
-
-\begin{table}[h!]
+Kết quả tìm được như bảng bên dưới:
+\begin{table}
     \center
     \begin{tabular}{| c || c | c |}
     \hline
      & Strategy A & Strategy B \\
      \hline
     \hline
-    Params & abc & abc \\
-    Best score & vv & vv \\
-    Testing set score & cc & cc \\
+    Params & \begin{tabular}{@{}c@{}}
+        \textbf{\underline{C}}: 0.1 \\ 
+        \textbf{\underline{epsilon}}: 0.1 \\ 
+        \textbf{\underline{gamma}}: 'scale' 
+    \end{tabular} & \begin{tabular}{@{}c@{}}
+        \textbf{\underline{C}}: 1 \\ 
+        \textbf{\underline{epsilon}}: 0.01 \\ 
+        \textbf{\underline{gamma}}: 'auto'
+    \end{tabular} \\
+    Best score & 0.4967 & 0.4728 \\
+    Best model on test set & 0.4784 & 0.4742  \\
+    Testing set score & 0.4804 & 0.4741 \\
     \hline
     \end{tabular}
 \end{table}
+
+\subsection{Kết luận}
+
+Từ kết quả thu được, có thể thấy thuật toán phù hợp là \textbf{Support Vector Regression} với chiến lược \textbf{Strategy B}.
