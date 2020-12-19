@@ -1,0 +1,85 @@
+\chapter{Predictive Modelling and Evaluation}
+
+\section{Metrics}
+
+Metric được lựa chọn để đánh giá các model là:
+
+$$RMSLE(predicted, actual) = \sqrt{\frac{1}{n}\sum_{i}^{n}[\log(predicted_{i} + 1) - \log(actual_{i} + 1)]^{2}}$$
+
+Trong đó:
+
+$i$ là dòng dữ liệu thứ $i$ trong tập testing
+
+$n$ là tổng số dòng dữ liệu trong tập testing
+
+$predicted_{i}$ là kết quả dự đoán của dòng thứ $i$
+
+$actual_{i}$ là kết quả thực tế của dòng thứ $i$
+
+\section{Algorithms}
+
+Trong phạm vi project này sử dụng 2 thuật toán XGBoost và Support Vector Regression để xây dựng mô hình hồi quy cho cả 2 chiến lược Strategy A và Strategy B, từ đó tìm ra được thuật toán và chiến lược nào là phù hợp nhất.
+
+Các hyperparameter tốt nhất được tìm ra bằng cách sử dụng Grid Search với 5-fold Cross-validation. 
+
+Do hạn chế về mặt thời gian làm project cũng như thời gian training tất cả dữ liệu quá lâu, project này chỉ sử dụng 5.000 dòng dữ liệu để làm hyperparameter tuning.
+
+Sau đó dùng tham số tốt nhất tìm được để train lại với tất cả dữ liệu và test lại với tập test để có số liệu cuối cùng.
+
+\subsection{XGBoost}
+
+Các hyperparameter sẽ được tuning là:
+
+\begin{itemize}
+\item \textbf{\underline{learning\_rate}}: Khảo sát các giá trị: 0.01, 0.1, 1.
+
+\item \textbf{\underline{max\_depth}}: Khảo sát các giá trị: 3, 5, 7.
+
+\item \textbf{\underline{subsample}}: Khảo sát các giá trị: 0.3, 0.5, 0.7.
+
+\item \textbf{\underline{n\_estimators}}: Khảo sát các giá trị: 100, 300, 500
+\end{itemize}
+Kết quả tìm được như sau:
+
+\begin{table}[h!]
+    \center
+    \begin{tabular}{| c || c | c |}
+    \hline
+     & Strategy A & Strategy B \\
+    \hline
+    \hline
+    Params & abc & abc \\
+    Best score & vv & vv \\
+    Testing set score & cc & cc \\
+    \hline
+    \end{tabular}
+\end{table}
+
+
+\subsection{Support Vector Regression}
+
+Do giới hạn về thời gian và kinh nghiệm, trong project này chỉ sử dụng kernel \textbf{rbf}. Các hyperparameter sẽ được tuning là:
+
+\begin{itemize}
+\item \textbf{\underline{C}}: Khảo sát các giá trị: 0.01, 0.1, 1, 10
+
+\item \textbf{\underline{epsilon}}: Khảo sát các giá trị: 0.0001, 0.001, 0.01, 0.1, 1
+
+\item \textbf{\underline{gamma}}: Khảo sát các giá trị: 'auto', 'scale'
+\end{itemize}
+
+Kết quả tìm được như bên dưới:
+
+\begin{table}[h!]
+    \center
+    \begin{tabular}{| c || c | c |}
+    \hline
+     & Strategy A & Strategy B \\
+     \hline
+    \hline
+    Params & abc & abc \\
+    Best score & vv & vv \\
+    Testing set score & cc & cc \\
+    \hline
+    \end{tabular}
+\end{table}

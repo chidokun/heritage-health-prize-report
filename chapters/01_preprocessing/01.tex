@@ -66,7 +66,7 @@ Chứa dữ liệu claim của bệnh nhân, mỗi feature trong bảng này s�
 
 \textbf{\underline{PCP}}: Đếm số lượng PCP duy nhất của từng bệnh nhân theo Y1, Y2 và Y12.
 
-\textbf{\underline{Speciaty}}: Đếm số lượng mỗi giá trị của Speciaty cho từng bệnh nhân theo Y1, Y2 và Y12.
+\textbf{\underline{Specialty}}: Đếm số lượng mỗi giá trị của Speciaty cho từng bệnh nhân theo Y1, Y2 và Y12.
 
 \textbf{\underline{PlaceSvc}}: Đếm số lượng mỗi giá trị của PlaceSvc cho từng bệnh nhân theo Y1, Y2 và Y12.
 
@@ -138,7 +138,7 @@ Chứa dữ liệu claim của bệnh nhân, mỗi feature trong bảng này s�
      5+ & 6 \\
      \hline
     \end{tabular}
-    \caption{DSFS}
+    \caption{CharlsonIndex}
     \label{table:1}
 \end{table}
 
@@ -156,8 +156,133 @@ Chứa dữ liệu claim của bệnh nhân, mỗi feature trong bảng này s�
 
 \section{Dataset building}
 
-
+Dữ liệu ban đầu sau khi tiền xử lý sẽ được dùng để xây dựng dữ liệu đầu vào theo 2 chiến lược bên dưới.
 
 \subsection{Strategy A}
 
+Ở chiến lược này, ta chỉ sử dụng dữ liệu một năm để xây dựng mô hình dự đoán kết quả của năm tiếp theo. Vì vậy tập dữ liệu được phân chia như bảng bên dưới:
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{|c c|} 
+     \hline
+     Training set & Testing set \\
+     \hline\hline
+     Claims Y1 & Claims Y2 \\
+     Outcome: DaysInHospital Y2 &  Outcome: DaysInHospital Y3\\
+     \hline
+    \end{tabular}
+    \caption{Training set và testing set cho Strategy A}
+    \label{table:1}
+\end{table}
+
+Các feature trong Strategy A:
+
+\begin{longtable}[c]{| c | c |}
+     \hline
+     Feature & Description \\
+     \hline
+     MemberID & Chỉ dùng làm index \\
+     AgeAtFirstClaim & Tuổi lúc claim lần đầu \\
+     Sex & Giới tính \\
+     ClaimCount & Số lượng claim trong năm \\
+     ProviderCount & Số lượng Provider duy nhất trong năm \\
+     VendorCount & Số lượng Vendor duy nhất trong năm \\
+     PCPCount & Số lượng PCP duy nhất trong năm \\
+     SpecialtyCount\_<value> & Số lượng claim từng giá trị trong năm \\
+     PlaceSvcCount\_<value> & Số lượng claim từng giá trị trong năm \\
+     PayDelayMin & Min PayDelay trong năm \\
+     PayDelayMax & Max PayDelay trong năm \\
+     PayDelayAvg & Avg PayDelay trong năm \\
+     PayDelayStd & Std PayDelay trong năm \\
+     PayDelaySum & Sum PayDelay trong năm \\
+     LengthOfStayMin & Min LengthOfStay trong năm \\
+     LengthOfStayMax & Max LengthOfStay trong năm \\
+     LengthOfStayAvg & Avg LengthOfStay trong năm \\
+     LengthOfStayStd & Std LengthOfStay trong năm \\
+     LengthOfStaySum & Sum LengthOfStay trong năm \\
+     LengthOfStayCountNan & Số lượng LengthOfStay là NaN trong năm \\ 
+     DSFSMin & Min DSFS trong năm \\
+     DSFSMax & Max DSFS trong năm \\
+     CharlsonIndexMin & Min CharlsonIndex trong năm \\
+     CharlsonIndexMax & Max CharlsonIndex trong năm \\
+     CharlsonIndexAvg & Avg CharlsonIndex trong năm \\
+     PrimaryConditionGroupCount\_<value> & Số lượng claim từng giá trị trong năm \\
+     ProcedureGroupCount\_<value> & Số lượng claim từng giá trị trong năm \\
+     LabCountMax & Max LabCount trong năm \\
+     LabCountMin & Min LabCount trong năm \\
+     LabCountAvg & Avg LabCount trong năm \\
+     LabCountStd & Std LabCount trong năm \\
+     LabCountSum & Sum LabCount trong năm \\
+     LabClaimCount & Số lượng claim của LabCount trong năm \\
+     DrugCountMax & Max DrugCount trong năm \\
+     DrugCountMin & Min DrugCount trong năm \\
+     DrugCountAvg & Avg DrugCount trong năm \\
+     DrugCountStd & Std DrugCount trong năm \\
+     DrugCountSum & Sum DrugCount trong năm \\
+     DrugClaimCount & Số lượng claim của DrugCount trong năm \\
+     \hline
+\end{longtable}
+
+
 \subsection{Strategy B}
+
+Trong chiến lược này, ta sẽ kết hợp các thuộc tính ở từng năm thành một bộ dữ liệu duy nhất. Sau đó sẽ chia tập training và testing theo tỉ lệ 8:2.
+
+Các feature trong Strategy B:
+
+\begin{longtable}[c]{| c | c |}
+    \hline
+    Feature & Description \\
+    \hline
+    MemberID & Chỉ dùng làm index \\
+    AgeAtFirstClaim & Tuổi lúc claim lần đầu \\
+    Sex & Giới tính \\
+    ClaimCount & Số lượng claim toàn lịch sử \\
+    ClaimCountLatestYear & Số lượng claim Y2 \\
+    ProviderCount & Số lượng Provider duy nhất toàn lịch sử \\
+    ProviderCountLatestYear & Số lượng Provider duy nhất trong Y2 \\
+    VendorCount & Số lượng Vendor duy nhất toàn lịch sử \\
+    VendorCountLatestYear & Số lượng Vendor duy nhất trong Y2 \\
+    PCPCount & Số lượng PCP duy nhất toàn lịch sử \\
+    PCPCountLatestYear & Số lượng PCP duy nhất trong Y2 \\
+    SpecialtyCount\_<value> & Số lượng claim từng giá trị toàn lịch sử \\
+    PlaceSvcCount\_<value> & Số lượng claim từng giá trị toàn lịch sử \\
+    PayDelayMin & Min PayDelay toàn lịch sử \\
+    PayDelayMax & Max PayDelay toàn lịch sử \\
+    PayDelayAvg & Avg PayDelay toàn lịch sử \\
+    PayDelayStd & Std PayDelay toàn lịch sử \\
+    PayDelaySum & Sum PayDelay toàn lịch sử \\
+    PayDelayMinLatestYear & Min PayDelay trong Y2 \\
+    PayDelayMaxLatestYear & Max PayDelay trong Y2 \\
+    PayDelayAvgLatestYear & Avg PayDelay trong Y2 \\
+    PayDelayStdLatestYear & Std PayDelay trong Y2 \\
+    PayDelaySumLatestYear & Sum PayDelay trong Y2 \\
+    LengthOfStayMin & Min LengthOfStay toàn lịch sử \\
+    LengthOfStayMax & Max LengthOfStay toàn lịch sử \\
+    LengthOfStayAvg & Avg LengthOfStay toàn lịch sử \\
+    LengthOfStayStd & Std LengthOfStay toàn lịch sử \\
+    LengthOfStaySum & Sum LengthOfStay toàn lịch sử \\
+    LengthOfStayCountNan & Số lượng LOS là NaN toàn lịch sử \\ 
+    LengthOfStaySumLatestYear & Sum LOS trong Y2 \\
+    LengthOfStayMaxLatestYear & Max LOS trong Y2 \\
+    LengthOfStayCountNanLatestYear & Số lượng LengthOfStay là NaN trong Y2 \\ 
+    DSFSMin & Min DSFS toàn lịch sử \\
+    DSFSMax & Max DSFS toàn lịch sử \\
+    DSFSMaxLatestYear & Max DSFS trong Y2 \\
+    CharlsonIndexMin & Min CharlsonIndex toàn lịch sử \\
+    CharlsonIndexMax & Max CharlsonIndex toàn lịch sử \\
+    CharlsonIndexAvg & Avg CharlsonIndex toàn lịch sử \\
+    CharlsonIndexMaxLatestYear & Max CharlsonIndex trong Y2 \\
+    PrimaryConditionGroupCount\_<value> & Số lượng claim từng giá trị toàn lịch sử \\
+    ProcedureGroupCount\_<value> & Số lượng claim từng giá trị toàn lịch sử \\
+    LabCountSum & Sum LabCount toàn lịch sử \\
+    LabClaimCount & Số lượng claim của LabCount toàn lịch sử \\
+    LabCountSumLatestYear & Sum LabCount trong Y2 \\
+    LabClaimCountLatestYear & Số lượng claim của LabCount trong Y2 \\
+    DrugCountSum & Sum DrugCount toàn lịch sử \\
+    DrugClaimCount & Số lượng claim của DrugCount toàn lịch sử \\
+    DrugCountSumLatestYear & Sum DrugCount trong Y2 \\
+    DrugClaimCountLatestYear & Số lượng claim của DrugCount trong Y2 \\
+    \hline
+\end{longtable}
